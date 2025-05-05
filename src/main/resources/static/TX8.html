@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TX-8</title>
+    <style>
+        body {
+            background-color: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .header {
+            width: 100%;
+            background-color: #444;
+            padding: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 10px;
+            position: relative;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .button {
+            padding: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .button:hover {
+            background-color: #cc0000;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            width: 100%;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .dropdown-content a {
+            display: block;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
+
+        .content-area {
+            flex-grow: 1;
+            background-color: #444;
+            margin-left: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .status-indicator {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+            background-color: gray;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .status-ethernet-connected {
+            background-color: green !important;
+        }
+
+        .status-asi-connected {
+            background-color: green !important;
+        }
+
+        .status-10MHz-connected {
+            background-color: green !important;
+        }
+
+        .status-1PPs-connected {
+            background-color: green !important;
+        }
+
+        .status-ethernet-disconnected {
+            background-color: gray !important;
+        }
+
+        .status-asi-disconnected {
+            background-color: gray !important;
+        }
+
+        .status-10MHz-disconnected {
+            background-color: gray !important;
+        }
+
+        .status-1PPs-disconnected {
+            background-color: gray !important;
+        }
+        .toggle-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      margin: 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status-container {
+      background-color: #e6e6e6;
+      color: #000;
+      padding: 10px;
+      margin: 15px;
+      border-radius: 8px;
+      width: 270px;
+    }
+
+    .status-container h3 {
+      margin: 0 0 10px;
+      background-color: #ccc;
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
+
+    .indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: red;
+      display: inline-block;
+    }
+
+    .indicator.active {
+      background-color: green;
+    }
+
+    .status-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #333;
+          padding: 10px 20px;
+          color: white;
+          font-size: 16px;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        .status-left {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+        }
+
+        .status-time {
+          font-weight: bold;
+        }
+
+        .status-conn {
+          padding: 5px 10px;
+          border-radius: 5px;
+          font-size: 14px;
+          font-weight: bold;
+        }
+
+        .conn-asi.connected {
+          background-color: green;
+        }
+
+        .conn-eth.connected {
+          background-color: green;
+        }
+
+        .conn-asi.disconnected {
+          background-color: gray;
+        }
+
+        .conn-eth.disconnected {
+          background-color: gray;
+        }
+
+        .status-buttons {
+          display: flex;
+          gap: 10px;
+        }
+
+        .status-buttons button {
+          padding: 8px 16px;
+          font-size: 14px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        .btn-on {
+          background-color: green;
+          color: white;
+        }
+
+        .btn-off {
+          background-color: red;
+          color: white;
+        }
+
+        .btn-back {
+          background-color: #666;
+          color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="status-bar">
+    <div class="status-left">
+        <span class="status-time" id="dateTime">--:--:--</span>
+        <span class="status-conn conn-eth disconnected" id="connEth">ETH</span>
+        <span class="status-conn conn-asi disconnected" id="connAsi">ASI</span>
+    </div>
+    <div class="status-buttons">
+        <button class="btn-on" onclick="ligarDispositivo()">Ligar</button>
+        <button class="btn-off" onclick="desligarDispositivo()">Desligar</button>
+        <button class="btn-back" onclick="window.history.back()">Voltar</button>
+    </div>
+</div>
+
+<div class="header">
+    IMTX-8-1
+</div>
+
+<div class="container">
+    <div class="button-container">
+        <div class="dropdown">
+            <button class="button" onclick="toggleDropdown(event)">Valores</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="fetchSnmpData('tensao36V.8)">Tensão 36V</a>
+                <a href="#" onclick="fetchSnmpData('tensao24V.8')">Tensão 24V</a>
+                <a href="#" onclick="fetchSnmpData('corrente.8')">Corrente</a>
+                <a href="#" onclick="fetchSnmpData('frequencia.8')">Frequência</a>
+                <a href="#" onclick="fetchSnmpData('temperatura.8')">Temperatura</a>
+                <a href="#" onclick="fetchSnmpData('temperaturaModulo.8')">Módulo</a>
+                <a href="#" onclick="fetchSnmpData('fan1.8')">FAN1 Velocidade</a>
+                <a href="#" onclick="fetchSnmpData('fan2.8')">FAN2 Velocidade</a>
+            </div>
+        </div>
+
+        <button class="button" id="ethernetIndicator">Ethernet</button>
+        <button class="button" id="asiIndicator">Asi</button>
+
+        <button class="button" onclick="toggleTSStatus()">Stream</button>
+
+        <div class="dropdown">
+            <button class="button" onclick="toggleDropdown(event)">Fans</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="loadGrafana('fan1.8')">Velocidade fan1</a>
+                <a href="#" onclick="loadGrafana('fan2.8')">Velocidade fan2</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="button" onclick="toggleDropdown(event)">Temperatura</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="loadGrafana('temperatura.8')">Temperatura</a>
+                <a href="#" onclick="loadGrafana('temperaturaModulo.8')">Temperatura do Módulo</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="button" onclick="toggleDropdown(event)">Frequência</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="loadGrafana('frequencia.8')">Frequência</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="tsStatusSection" class="hidden">
+        <div class="status-container">
+            <h3>Cable Present</h3>
+            <div class="row"><span>Status:</span> <span id="cableStatus" class="indicator"></span></div>
+            <div class="row"><span>Speed:</span> <span id="speed8">-</span></div>
+            <div class="row"><span>IP Packet Rate:</span> <span id="packetRate8">-</span></div>
+        </div>
+
+        <div class="status-container">
+            <h3>Transport Stream</h3>
+            <div class="row"><span>Locked:</span> <span id="locked8" class="indicator"></span></div>
+            <div class="row"><span>FEC D:</span> <span id="fecD8">-</span></div>
+            <div class="row"><span>FEC L:</span> <span id="fecL8">-</span></div>
+            <div class="row"><span>Rebuild IP Packet:</span> <span id="rebuild8">-</span></div>
+            <div class="row"><span>TS Packets/sec:</span> <span id="tsPackets8">-</span></div>
+            <div class="row"><span>ASI Format:</span> <span id="asi8">-</span></div>
+        </div>
+    </div>
+
+    <div class="content-area" id="content-area">
+        Aqui aparecerão os dados SNMP...
+        <div id="snmpData"></div>
+    </div>
+</div>
+
+<div>
+
+</div>
+<script>
+    function fetchSnmpData(oidName) {
+        const contentArea = document.getElementById('content-area');
+        contentArea.textContent = 'Carregando...';
+
+        fetch(`http://localhost:8080/snmp-data/get-snmp?oid=${oidName}`)
+            .then(response => response.text())
+            .then(data => {
+                contentArea.textContent = `${oidName}: ${data}`;
+            })
+            .catch(error => {
+                console.error('Erro ao obter dados SNMP:', error);
+                contentArea.textContent = `Erro ao obter dados SNMP para ${oidName}`;
+            });
+    }
+
+    function toggleDropdown(event) {
+        const button = event.target;
+        const dropdown = button.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-content').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = "none";
+            }
+        });
+
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    function checkEthernetStatus() {
+        fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.8")
+            .then(response => response.text())
+            .then(data => {
+                const ethernetIndicator = document.getElementById("ethernetIndicator");
+                ethernetIndicator.classList.toggle("status-ethernet-connected", parseInt(data) === 1);
+                ethernetIndicator.classList.toggle("status-ethernet-disconnected", parseInt(data) === 2);
+            });
+    }
+
+    function checkAsiStatus() {
+        fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.8")
+            .then(response => response.text())
+            .then(data => {
+                const asiIndicator = document.getElementById("asiIndicator");
+                asiIndicator.classList.toggle("status-asi-connected", parseInt(data) === 1);
+                asiIndicator.classList.toggle("status-asi-disconnected", parseInt(data) === 2);
+            });
+    }
+
+    setInterval(checkEthernetStatus, 5000);
+    checkEthernetStatus();
+
+    setInterval(checkAsiStatus, 5000);
+    checkAsiStatus();
+
+    function loadGrafana(item) {
+        const contentArea = document.getElementById('content-area');
+        contentArea.innerHTML = '';
+
+        const grafanaFrame = document.createElement('iframe');
+        grafanaFrame.setAttribute('width', '100%');
+        grafanaFrame.setAttribute('height', '500');
+        grafanaFrame.setAttribute('frameborder', '0');
+
+        const urls = {
+            'fan1.8': "http://localhost:3000/d-solo/deiak87e62n7kb/fan1-3?orgId=2&from=now-5m&to=now&panelId=1",
+            'fan2.8': "http://localhost:3000/d-solo/beiakcpffycqoe/fan2-3?orgId=2&from=now-5m&to=now&panelId=1",
+            'frequencia.8': "http://localhost:3000/d-solo/eeiajzl01sm4ga/frequencia-3?orgId=2&from=now-5m&to=now&panelId=1",
+            'temperatura.8': "http://localhost:3000/d-solo/beiajl0u3uhogb/temperatura-3?orgId=2&from=now-5m&to=now&panelId=1",
+            'modulo.8': "http://localhost:3000/d-solo/aeiak3ztmdn28d/temperaturamodulo-3?orgId=2&from=now-5m&to=now&panelId=1"
+        };
+
+        grafanaFrame.src = urls[item] || '';
+        contentArea.appendChild(grafanaFrame);
+    }
+
+    function loadStreamTable() {
+        const contentArea = document.getElementById('content-area');
+        contentArea.innerHTML = '<p>Carregando dados da Stream...</p>';
+
+        fetch('http://localhost:8080/snmp-data/transport-stream')
+            .then(response => response.json())
+            .then(data => {
+                if (!Array.isArray(data)) {
+                    contentArea.innerHTML = '<p>Nenhum dado encontrado.</p>';
+                    return;
+                }
+
+                let table = '<table style="width: 100%; border-collapse: collapse; color: white;">';
+                table += '<thead><tr>' +
+                    '<th style="border: 1px solid #666; padding: 8px;">Program Number</th>' +
+                    '<th style="border: 1px solid #666; padding: 8px;">PCR PID</th>' +
+                    '<th style="border: 1px solid #666; padding: 8px;">Bitrate</th>' +
+                    '<th style="border: 1px solid #666; padding: 8px;">Total Packets</th>' +
+                    '<th style="border: 1px solid #666; padding: 8px;">CC Errors</th>' +
+                    '<th style="border: 1px solid #666; padding: 8px;">TEI Errors</th>' +
+                    '</tr></thead><tbody>';
+
+                data.forEach(item => {
+                    table += `<tr>
+                        <td style="border: 1px solid #666; padding: 8px;">${item.programNumber}</td>
+                        <td style="border: 1px solid #666; padding: 8px;">${item.pcrPid}</td>
+                        <td style="border: 1px solid #666; padding: 8px;">${item.bitrate}</td>
+                        <td style="border: 1px solid #666; padding: 8px;">${item.totalPackets}</td>
+                        <td style="border: 1px solid #666; padding: 8px;">${item.ccErrors}</td>
+                        <td style="border: 1px solid #666; padding: 8px;">${item.teiErrors}</td>
+                    </tr>`;
+                });
+
+                table += '</tbody></table>';
+                contentArea.innerHTML = table;
+            })
+            .catch(error => {
+                console.error('Erro ao carregar a tabela de stream:', error);
+                contentArea.innerHTML = '<p>Erro ao carregar dados da stream.</p>';
+            });
+    }
+
+    function fetchAllSnmpDataOnLoad() {
+        const oids = [
+            'tensao36V.8',
+            'tensao24V.8',
+            'corrente.8',
+            'frequencia.8',
+            'temperatura.8',
+            'modulo.8',
+            'fan1.8',
+            'fan2.8'
+        ];
+
+        oids.forEach(oid => {
+            fetch(`http://localhost:8080/snmp-data/get-snmp?oid=${oid}`)
+                .then(response => response.text())
+                .then(data => {
+                    console.log(`OID ${oid}: ${data}`);
+                })
+                .catch(error => {
+                    console.error(`Erro ao buscar ${oid}:`, error);
+                });
+        });
+    }
+
+     function toggleTSStatus() {
+    const section = document.getElementById("tsStatusSection");
+    const btn = document.querySelector(".button");
+
+    if (section.classList.contains("hidden")) {
+      section.classList.remove("hidden");
+      btn.textContent = "Ocultar Status TX8";
+      updateTSStatus(); // carrega os dados na primeira exibição
+    } else {
+      section.classList.add("hidden");
+      btn.textContent = "Stream";
+    }
+  }
+
+  async function updateTSStatus() {
+    const res = await Promise.all([
+    fetch('/ts/cableStatus').then(r => r.text()),
+    fetch('/ts/speed').then(r => r.text()),
+    fetch('/ts/packetRate').then(r => r.text()),
+    fetch('/ts/locked').then(r => r.text()),
+    fetch('/ts/fecD').then(r => r.text()),
+    fetch('/ts/fecL').then(r => r.text()),
+    fetch('/ts/rebuild').then(r => r.text()),
+    fetch('/ts/tsPackets').then(r => r.text()),
+    fetch('/ts/asiFormat').then(r => r.text()),
+    ]);
+
+    const [
+      cableStatus, speed, packetRate,
+      locked, fecD, fecL, rebuild, tsPackets, asiFormat
+    ] = res;
+
+  document.getElementById("ts-cable-status").textContent = cableStatus;
+  document.getElementById("ts-speed").textContent = speed;
+  document.getElementById("ts-packet-rate").textContent = packetRate;
+  document.getElementById("ts-locked").textContent = locked;
+  document.getElementById("ts-fec-d").textContent = fecD;
+  document.getElementById("ts-fec-l").textContent = fecL;
+  document.getElementById("ts-rebuild").textContent = rebuild;
+  document.getElementById("ts-ts-packets").textContent = tsPackets;
+  document.getElementById("ts-asi-format").textContent = asiFormat;
+  }
+
+   setInterval(() => {
+    if (!document.getElementById("tsStatusSection").classList.contains("hidden")) {
+      updateTSStatus();
+    }
+  }, 5000);
+  function atualizarDataHora() {
+      const agora = new Date();
+      const dataFormatada = agora.toLocaleDateString('pt-BR');
+      const horaFormatada = agora.toLocaleTimeString('pt-BR');
+      document.getElementById('dateTime').textContent = `${dataFormatada} ${horaFormatada}`;
+    }
+
+    function ligarDispositivo() {
+      // Altere para seu endpoint real
+      console.log("Comando: Ligar");
+      fetch('/api/snmp/ligar', { method: 'POST' })
+        .then(response => alert("Dispositivo ligado"))
+        .catch(err => alert("Erro ao ligar"));
+    }
+
+    function desligarDispositivo() {
+      // Altere para seu endpoint real
+      console.log("Comando: Desligar");
+      fetch('/api/snmp/desligar', { method: 'POST' })
+        .then(response => alert("Dispositivo desligado"))
+        .catch(err => alert("Erro ao desligar"));
+    }
+
+    function voltar() {
+      // Ação do botão voltar
+      console.log("Voltando à tela anterior");
+      window.location.href = "/menu"; // ou qualquer outra rota
+    }
+
+    // Atualizar data/hora a cada segundo
+    setInterval(atualizarDataHora, 1000);
+    atualizarDataHora();
+
+    function checkEthernetStatus() {
+  fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.8")
+    .then(response => response.text())
+    .then(data => {
+      const ethernetIndicator = document.getElementById("ethernetIndicator");
+      const connEth = document.getElementById("connEth");
+
+      ethernetIndicator.classList.toggle("status-ethernet-connected", parseInt(data) === 1);
+      ethernetIndicator.classList.toggle("status-ethernet-disconnected", parseInt(data) === 2);
+
+      connEth.classList.toggle("connected", parseInt(data) === 1);
+      connEth.classList.toggle("disconnected", parseInt(data) === 2);
+    });
+  }
+
+  function checkAsiStatus() {
+  fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.8")
+    .then(response => response.text())
+    .then(data => {
+      const asiIndicator = document.getElementById("asiIndicator");
+      const connAsi = document.getElementById("connAsi");
+
+      asiIndicator.classList.toggle("status-asi-connected", parseInt(data) === 1);
+      asiIndicator.classList.toggle("status-asi-disconnected", parseInt(data) === 2);
+
+      connAsi.classList.toggle("connected", parseInt(data) === 1);
+      connAsi.classList.toggle("disconnected", parseInt(data) === 2);
+    });
+  }
+
+  // chamadas automáticas com intervalo
+  setInterval(checkEthernetStatus, 5000);
+  checkEthernetStatus();
+
+  setInterval(checkAsiStatus, 5000);
+  checkAsiStatus();
+
+    // Atualiza status de conexão a cada 5 segundos
+    setInterval(atualizarStatusConexao, 5000);
+    atualizarStatusConexao();
+    window.onload = fetchAllSnmpDataOnLoad;
+
+</script>
+
+</body>
+</html>
+

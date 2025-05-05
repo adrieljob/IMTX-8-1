@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Status dos Transmissores</title>
+    <style>
+        body {
+            background-color: #222; /* Fundo escuro */
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #333;
+            padding: 30px;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, 120px);
+            gap: 20px;
+            box-shadow: 0 0 10px #000;
+        }
+        .tx-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .tx-button {
+            padding: 20px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: default;
+            width: 100%;
+            background-color: gray;
+        }
+            .nav-button {
+            padding: 8px;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            background-color: #666;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+            .nav-button:hover {
+            background-color: #777;
+        }
+        .on {
+            background-color: green;
+        }
+        .off {
+            background-color: red;
+        }
+        .unknown {
+            background-color: gray;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="txContainer">
+    <!-- Botões serão inseridos via JS -->
+</div>
+
+<script>
+    const container = document.getElementById("txContainer");
+    const txBoxes = [];
+
+    function createTxBox(txId, status) {
+        const box = document.createElement("div");
+        box.classList.add("tx-box");
+
+        const statusBtn = document.createElement("button");
+        statusBtn.classList.add("tx-button");
+
+        if (status === 1) {
+            statusBtn.classList.add("on");
+        } else if (status === 2) {
+            statusBtn.classList.add("off");
+        } else {
+            statusBtn.classList.add("unknown");
+        }
+
+        statusBtn.textContent = `TX${txId}`;
+
+        const navBtn = document.createElement("button");
+        navBtn.classList.add("nav-button");
+        navBtn.textContent = `Acessar TX${txId}`;
+        navBtn.onclick = () => {
+            window.location.href = `TX${txId}.html`; // Redireciona na mesma aba
+        };
+
+        box.appendChild(statusBtn);
+        box.appendChild(navBtn);
+
+        return box;
+    }
+
+    function loadStatuses() {
+        container.innerHTML = "";
+        txBoxes.length = 0;
+
+        for (let i = 1; i <= 8; i++) {
+            fetch(`http://localhost:8080/snmp/status/${i}`)
+                .then(res => res.json())
+                .then(status => {
+                    const txBox = createTxBox(i, status);
+                    txBoxes[i - 1] = txBox;
+                    if (txBoxes.filter(b => b).length === 8) {
+                        txBoxes.forEach(box => container.appendChild(box));
+                    }
+                })
+                .catch(err => {
+                    console.error(`Erro ao buscar status do TX${i}:`, err);
+                    const txBox = createTxBox(i, -1);
+                    txBoxes[i - 1] = txBox;
+                    if (txBoxes.filter(b => b).length === 8) {
+                        txBoxes.forEach(box => container.appendChild(box));
+                    }
+                });
+        }
+    }
+
+    loadStatuses();
+</script>
+</body>
+</html>

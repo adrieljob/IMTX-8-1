@@ -429,25 +429,25 @@
     checkAsiStatus();
 
     function loadGrafana(item) {
-    const contentArea = document.getElementById('content-area');
-    contentArea.innerHTML = '';
+        const contentArea = document.getElementById('content-area');
+        contentArea.innerHTML = '';
 
-    const grafanaFrame = document.createElement('iframe');
-    grafanaFrame.setAttribute('width', '100%');
-    grafanaFrame.setAttribute('height', '500');
-    grafanaFrame.setAttribute('frameborder', '0');
+        const grafanaFrame = document.createElement('iframe');
+        grafanaFrame.setAttribute('width', '100%');
+        grafanaFrame.setAttribute('height', '500');
+        grafanaFrame.setAttribute('frameborder', '0');
 
-    const urls = {
-          'fan1.3': "http://localhost:3000/d-solo/YyaQ1xAHk/fan1-2?orgId=2&from=1746428960895&to=1746450560895&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
-          'fan2.3': "http://localhost:3000/d-solo/NORr1bAHk/fan2-2?orgId=2&from=1746428985899&to=1746450585899&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
-          'frequencia.3': "http://localhost:3000/d-solo/fU7gbb0Hk/frequencia-2?orgId=2&from=1746429017656&to=1746450617656&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
-          'temperatura.3': "http://localhost:3000/d-solo/SVDmxb0Hz/temperatura-2?orgId=2&from=1746428647989&to=1746450247989&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
-          'modulo.3': "http://localhost:3000/d-solo/v4jWbb0Hk/temperaturamodulo-2?orgId=2&from=1746429111911&to=1746450711911&timezone=browser&panelId=2&__feature.dashboardSceneSolo"
+        const urls = {
+            'fan1.3': "http://localhost:3000/d-solo/YyaQ1xAHk/fan1-2?orgId=2&from=1746428960895&to=1746450560895&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
+            'fan2.3': "http://localhost:3000/d-solo/NORr1bAHk/fan2-2?orgId=2&from=1746428985899&to=1746450585899&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
+            'frequencia.3': "http://localhost:3000/d-solo/fU7gbb0Hk/frequencia-2?orgId=2&from=1746429017656&to=1746450617656&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
+            'temperatura.3': "http://localhost:3000/d-solo/SVDmxb0Hz/temperatura-2?orgId=2&from=1746428647989&to=1746450247989&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
+            'modulo.3': "http://localhost:3000/d-solo/v4jWbb0Hk/temperaturamodulo-2?orgId=2&from=1746429111911&to=1746450711911&timezone=browser&panelId=2&__feature.dashboardSceneSolo"
         };
 
-    grafanaFrame.src = urls[item] || '';
-    contentArea.appendChild(grafanaFrame);
-}
+        grafanaFrame.src = urls[item] || '';
+        contentArea.appendChild(grafanaFrame);
+    }
 
     function loadStreamTable() {
         const contentArea = document.getElementById('content-area');

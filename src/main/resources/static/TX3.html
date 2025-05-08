@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TX-3</title>
+    <title>TX-4</title>
     <style>
         body {
             background-color: #222;
@@ -302,70 +302,77 @@
 
 <div class="container">
     <div class="button-container">
+        <!-- Valores dropdown -->
         <div class="dropdown">
             <button class="button" onclick="toggleDropdown(event)">Valores</button>
             <div class="dropdown-content">
-                <a href="#" onclick="fetchSnmpData('tensao36V.3')">Tensão 36V</a>
-                <a href="#" onclick="fetchSnmpData('tensao24V.3')">Tensão 24V</a>
-                <a href="#" onclick="fetchSnmpData('corrente.3')">Corrente</a>
-                <a href="#" onclick="fetchSnmpData('frequencia.3')">Frequência</a>
-                <a href="#" onclick="fetchSnmpData('temperatura.3')">Temperatura</a>
-                <a href="#" onclick="fetchSnmpData('temperaturaModulo.3')">Módulo</a>
-                <a href="#" onclick="fetchSnmpData('fan1.3')">FAN1 Velocidade</a>
-                <a href="#" onclick="fetchSnmpData('fan2.3')">FAN2 Velocidade</a>
+                <a href="#" onclick="fetchSnmpData('tensao36V.4')">Tensão 36V</a>
+                <a href="#" onclick="fetchSnmpData('tensao24V.4')">Tensão 24V</a>
+                <a href="#" onclick="fetchSnmpData('corrente.4')">Corrente</a>
+                <a href="#" onclick="fetchSnmpData('frequencia.4')">Frequência</a>
+                <a href="#" onclick="fetchSnmpData('temperatura.4')">Temperatura</a>
+                <a href="#" onclick="fetchSnmpData('temperaturaModulo.4')">Módulo</a>
+                <a href="#" onclick="fetchSnmpData('fan1.4')">FAN1 Velocidade</a>
+                <a href="#" onclick="fetchSnmpData('fan2.4')">FAN2 Velocidade</a>
             </div>
         </div>
 
+        <!-- Status buttons -->
         <button class="button" id="ethernetIndicator">Ethernet</button>
         <button class="button" id="asiIndicator">Asi</button>
 
         <button class="button" onclick="toggleTSStatus()">Stream</button>
 
+        <!-- Fans dropdown -->
         <div class="dropdown">
             <button class="button" onclick="toggleDropdown(event)">Fans</button>
             <div class="dropdown-content">
-                <a href="#" onclick="loadGrafana('fan1.3')">Velocidade fan1</a>
-                <a href="#" onclick="loadGrafana('fan2.3')">Velocidade fan2</a>
+                <a href="#" onclick="loadGrafana('fan1')">Velocidade fan1</a>
+                <a href="#" onclick="loadGrafana('fan2')">Velocidade fan2</a>
             </div>
         </div>
 
+        <!-- Temperatura dropdown -->
         <div class="dropdown">
             <button class="button" onclick="toggleDropdown(event)">Temperatura</button>
             <div class="dropdown-content">
-                <a href="#" onclick="loadGrafana('temperatura.3')">Temperatura</a>
-                <a href="#" onclick="loadGrafana('temperaturaModulo.3')">Temperatura do Módulo</a>
+                <a href="#" onclick="loadGrafana('temperatura')">Temperatura</a>
+                <a href="#" onclick="loadGrafana('temperaturaModulo')">Temperatura do Módulo</a>
             </div>
         </div>
 
+        <!-- Frequência dropdown -->
         <div class="dropdown">
             <button class="button" onclick="toggleDropdown(event)">Frequência</button>
             <div class="dropdown-content">
-                <a href="#" onclick="loadGrafana('frequencia.3')">Frequência</a>
+                <a href="#" onclick="loadGrafana('frequencia')">Frequência</a>
             </div>
         </div>
     </div>
 
+    <!-- Stream -->
     <div id="tsStatusSection" class="hidden">
         <div class="status-container">
             <h3>Cable Present</h3>
             <div class="row"><span>Status:</span> <span id="cableStatus" class="indicator"></span></div>
-            <div class="row"><span>Speed:</span> <span id="speed3">-</span></div>
-            <div class="row"><span>IP Packet Rate:</span> <span id="packetRate3">-</span></div>
+            <div class="row"><span>Speed:</span> <span id="speed4">-</span></div>
+            <div class="row"><span>IP Packet Rate:</span> <span id="packetRate4">-</span></div>
         </div>
 
         <div class="status-container">
             <h3>Transport Stream</h3>
-            <div class="row"><span>Locked:</span> <span id="locked3" class="indicator"></span></div>
-            <div class="row"><span>FEC D:</span> <span id="fecD3">-</span></div>
-            <div class="row"><span>FEC L:</span> <span id="fecL3">-</span></div>
-            <div class="row"><span>Rebuild IP Packet:</span> <span id="rebuild3">-</span></div>
-            <div class="row"><span>TS Packets/sec:</span> <span id="tsPackets3">-</span></div>
-            <div class="row"><span>ASI Format:</span> <span id="asi3">-</span></div>
+            <div class="row"><span>Locked:</span> <span id="locked4" class="indicator"></span></div>
+            <div class="row"><span>FEC D:</span> <span id="fecD4">-</span></div>
+            <div class="row"><span>FEC L:</span> <span id="fecL4">-</span></div>
+            <div class="row"><span>Rebuild IP Packet:</span> <span id="rebuild4">-</span></div>
+            <div class="row"><span>TS Packets/sec:</span> <span id="tsPackets4">-</span></div>
+            <div class="row"><span>ASI Format:</span> <span id="asi4">-</span></div>
         </div>
     </div>
 
+    <!-- Content area for SNMP data or Grafana iframe -->
     <div class="content-area" id="content-area">
-        Aqui aparecerão os dados SNMP...
+        Aqui aparecerão os dados SNMP ou gráficos do Grafana...
         <div id="snmpData"></div>
     </div>
 </div>
@@ -389,21 +396,23 @@
             });
     }
 
+     // Toggle dropdown menu
     function toggleDropdown(event) {
-        const button = event.target;
-        const dropdown = button.nextElementSibling;
-
-        document.querySelectorAll('.dropdown-content').forEach(menu => {
-            if (menu !== dropdown) {
-                menu.style.display = "none";
-            }
+        event.stopPropagation();
+        const dropdown = event.target.nextElementSibling;
+        document.querySelectorAll('.dropdown-content').forEach(dc => {
+            if (dc !== dropdown) dc.style.display = 'none';
         });
-
-        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
     }
 
+    // Close dropdowns on outside click
+    window.addEventListener('click', () => {
+        document.querySelectorAll('.dropdown-content').forEach(dc => dc.style.display = 'none');
+    });
+
     function checkEthernetStatus() {
-        fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.3")
+        fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.4")
             .then(response => response.text())
             .then(data => {
                 const ethernetIndicator = document.getElementById("ethernetIndicator");
@@ -413,7 +422,7 @@
     }
 
     function checkAsiStatus() {
-        fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.3")
+        fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.4")
             .then(response => response.text())
             .then(data => {
                 const asiIndicator = document.getElementById("asiIndicator");
@@ -428,25 +437,31 @@
     setInterval(checkAsiStatus, 5000);
     checkAsiStatus();
 
+    // Grafana URLs matching first code dashboard snapshots
+    const grafanaUrls = {
+        'fan1': "http://localhost:3000/d/cel66kgchm7eoc/fan1-3?orgId=1&from=1746122008985&to=1746726808985",
+        'fan2': "http://localhost:3000/d/del66zd2u6adcc/fan2-3?orgId=1&from=1746122025344&to=1746726825345",
+        'temperatura': "http://localhost:3000/d/del67wemrwn40b/temperatura-3?orgId=1&from=1746122060662&to=1746726860662",
+        'frequencia': "http://localhost:3000/d/eel68pnus55oga/frequencia-3?orgId=1&from=1746122041214&to=1746726841218",
+        'temperaturaModulo': "http://localhost:3000/d/ael69eg79sutcb/temperaturamodulo-3?orgId=1&from=1746122075614&to=1746726875614"
+    };
+
+    // Load Grafana dashboard into iframe in content area
     function loadGrafana(item) {
         const contentArea = document.getElementById('content-area');
-        contentArea.innerHTML = '';
+        contentArea.innerHTML = ''; // Clear old content
 
-        const grafanaFrame = document.createElement('iframe');
-        grafanaFrame.setAttribute('width', '100%');
-        grafanaFrame.setAttribute('height', '500');
-        grafanaFrame.setAttribute('frameborder', '0');
+        if (!(item in grafanaUrls)) {
+            contentArea.textContent = 'Dashboard não disponível para este item.';
+            return;
+        }
 
-        const urls = {
-            'fan1.3': "http://localhost:3000/d-solo/YyaQ1xAHk/fan1-3?orgId=2&from=1746428960895&to=1746450560895&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
-            'fan2.3': "http://localhost:3000/d-solo/NORr1bAHk/fan2-3?orgId=2&from=1746428985899&to=1746450585899&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
-            'frequencia.3': "http://localhost:3000/d-solo/fU7gbb0Hk/frequencia-3?orgId=2&from=1746429017656&to=1746450617656&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
-            'temperatura.3': "http://localhost:3000/d-solo/SVDmxb0Hz/temperatura-3?orgId=2&from=1746428647989&to=1746450247989&timezone=browser&panelId=2&__feature.dashboardSceneSolo",
-            'modulo.3': "http://localhost:3000/d-solo/v4jWbb0Hk/temperaturamodulo-3?orgId=2&from=1746429111911&to=1746450711911&timezone=browser&panelId=2&__feature.dashboardSceneSolo"
-        };
-
-        grafanaFrame.src = urls[item] || '';
-        contentArea.appendChild(grafanaFrame);
+        const iframe = document.createElement('iframe');
+        iframe.className = 'grafana-frame';
+        iframe.src = grafanaUrls[item];
+        iframe.allowFullscreen = true;
+        iframe.allow = 'fullscreen';
+        contentArea.appendChild(iframe);
     }
 
     function loadStreamTable() {
@@ -493,14 +508,14 @@
 
     function fetchAllSnmpDataOnLoad() {
         const oids = [
-            'tensao36V.3',
-            'tensao24V.3',
-            'corrente.3',
-            'frequencia.3',
-            'temperatura.3',
-            'modulo.3',
-            'fan1.3',
-            'fan2.3'
+            'tensao36V.4',
+            'tensao24V.4',
+            'corrente.4',
+            'frequencia.4',
+            'temperatura.4',
+            'modulo.4',
+            'fan1.4',
+            'fan2.4'
         ];
 
         oids.forEach(oid => {
@@ -517,11 +532,11 @@
 
      function toggleTSStatus() {
     const section = document.getElementById("tsStatusSection");
-    const btn = document.querySelector(".button");
+    const btn = document.getElementById("streamButton");
 
     if (section.classList.contains("hidden")) {
       section.classList.remove("hidden");
-      btn.textContent = "Ocultar Status TX3";
+      btn.textContent = "Ocultar Status TX4";
       updateTSStatus(); // carrega os dados na primeira exibição
     } else {
       section.classList.add("hidden");
@@ -547,16 +562,16 @@
       locked, fecD, fecL, rebuild, tsPackets, asiFormat
     ] = res;
 
-  document.getElementById("ts-cable-status").textContent = cableStatus;
-  document.getElementById("ts-speed").textContent = speed;
-  document.getElementById("ts-packet-rate").textContent = packetRate;
-  document.getElementById("ts-locked").textContent = locked;
-  document.getElementById("ts-fec-d").textContent = fecD;
-  document.getElementById("ts-fec-l").textContent = fecL;
-  document.getElementById("ts-rebuild").textContent = rebuild;
-  document.getElementById("ts-ts-packets").textContent = tsPackets;
-  document.getElementById("ts-asi-format").textContent = asiFormat;
-}
+  document.getElementById("cableStatus").textContent = cableStatus;
+  document.getElementById("speed4").textContent = speed;
+  document.getElementById("packetRate4").textContent = packetRate;
+  document.getElementById("locked4").textContent = locked;
+  document.getElementById("fecD4").textContent = fecD;
+  document.getElementById("fecL4").textContent = fecL;
+  document.getElementById("rebuild4").textContent = rebuild;
+  document.getElementById("tsPackets4").textContent = tsPackets;
+  document.getElementById("asi4").textContent = asiFormat;
+  }
 
    setInterval(() => {
     if (!document.getElementById("tsStatusSection").classList.contains("hidden")) {
@@ -587,7 +602,7 @@
     }
 
     function voltar() {
-      // Ação do botão voltar (você pode mudar para `window.history.back();` se preferir)
+      // Ação do botão voltar
       console.log("Voltando à tela anterior");
       window.location.href = "/menu"; // ou qualquer outra rota
     }
@@ -597,7 +612,7 @@
     atualizarDataHora();
 
     function checkEthernetStatus() {
-  fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.3")
+  fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.4")
     .then(response => response.text())
     .then(data => {
       const ethernetIndicator = document.getElementById("ethernetIndicator");
@@ -609,10 +624,10 @@
       connEth.classList.toggle("connected", parseInt(data) === 1);
       connEth.classList.toggle("disconnected", parseInt(data) === 2);
     });
-}
+  }
 
-function checkAsiStatus() {
-  fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.3")
+  function checkAsiStatus() {
+  fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.4")
     .then(response => response.text())
     .then(data => {
       const asiIndicator = document.getElementById("asiIndicator");
@@ -624,18 +639,18 @@ function checkAsiStatus() {
       connAsi.classList.toggle("connected", parseInt(data) === 1);
       connAsi.classList.toggle("disconnected", parseInt(data) === 2);
     });
-}
+  }
 
-// chamadas automáticas com intervalo
-setInterval(checkEthernetStatus, 5000);
-checkEthernetStatus();
+  // chamadas automáticas com intervalo
+  setInterval(checkEthernetStatus, 5000);
+  checkEthernetStatus();
 
-setInterval(checkAsiStatus, 5000);
-checkAsiStatus();
+  setInterval(checkAsiStatus, 5000);
+  checkAsiStatus();
 
     // Atualiza status de conexão a cada 5 segundos
-    setInterval(atualizarStatusConexao, 5000);
-    atualizarStatusConexao();
+
+
     window.onload = fetchAllSnmpDataOnLoad;
 
 </script>

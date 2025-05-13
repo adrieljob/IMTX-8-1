@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -295,5 +296,13 @@ public class SnmpController {
         streams.add(tx3);
 
         return streams;
+    }
+
+    @PostMapping("/set")
+    public String setSnmpValue(@RequestParam String ip,
+                               @RequestParam String community,
+                               @RequestParam String oid,
+                               @RequestParam String value) {
+        return snmpService.sendSetCommand(ip, community, oid, value);
     }
 }

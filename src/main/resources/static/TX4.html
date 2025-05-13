@@ -456,11 +456,16 @@
             return;
         }
 
-        const iframe = document.createElement('iframe');
+         const iframe = document.createElement('iframe');
         iframe.className = 'grafana-frame';
         iframe.src = grafanaUrls[item];
         iframe.allowFullscreen = true;
         iframe.allow = 'fullscreen';
+
+        // TAMANHO PERSONALIZADO
+        iframe.style.width = '80%';     // ou por exemplo: '1200px'
+        iframe.style.height = '370px';   // ajuste como quiser
+
         contentArea.appendChild(iframe);
     }
 
@@ -657,4 +662,3 @@
 
 </body>
 </html>
-

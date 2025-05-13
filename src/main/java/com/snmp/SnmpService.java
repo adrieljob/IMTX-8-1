@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.snmp4j.PDU;
 
 import java.io.IOException;
 
@@ -84,5 +85,41 @@ public class SnmpService {
         return response.getBody();
     }
 
+    public String sendSetCommand(String ip, String community, String oid, String value) {
+        try {
+            // Cria transporte e SNMP
+            TransportMapping<UdpAddress> transport = new DefaultUdpTransportMapping();
+            Snmp snmp = new Snmp(transport);
+            transport.listen();
+
+            // Endereço do TX
+            CommunityTarget target = new CommunityTarget();
+            target.setCommunity(new OctetString(community));
+            target.setAddress(GenericAddress.parse("udp:" + ip + "/161"));
+            target.setRetries(2);
+            target.setTimeout(1500);
+            target.setVersion(SnmpConstants.version2c);
+
+            // PDU SET
+            PDU pdu = new PDU();
+            OID oidObj = new OID(oid);
+            Variable var = new OctetString(value); // pode mudar para Integer32, etc. dependendo do tipo
+            pdu.add(new VariableBinding(oidObj, var));
+            pdu.setType(PDU.SET);
+
+            // Envia o comando
+            ResponseEvent response = snmp.set(pdu, target);
+            snmp.close();
+
+            if (response.getResponse() == null) {
+                return "Sem resposta do equipamento.";
+            } else {
+                return "Resposta: " + response.getResponse().toString();
+            }
+
+        } catch (Exception e) {
+            return "Erro ao enviar comando SNMP SET: " + e.getMessage();
+        }
+    }
 
 }

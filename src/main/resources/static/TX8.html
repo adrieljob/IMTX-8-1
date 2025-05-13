@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TX-4</title>
+    <title>TX-8</title>
     <style>
         body {
             background-color: #222;
@@ -306,14 +306,14 @@
         <div class="dropdown">
             <button class="button" onclick="toggleDropdown(event)">Valores</button>
             <div class="dropdown-content">
-                <a href="#" onclick="fetchSnmpData('tensao36V.4')">Tensão 36V</a>
-                <a href="#" onclick="fetchSnmpData('tensao24V.4')">Tensão 24V</a>
-                <a href="#" onclick="fetchSnmpData('corrente.4')">Corrente</a>
-                <a href="#" onclick="fetchSnmpData('frequencia.4')">Frequência</a>
-                <a href="#" onclick="fetchSnmpData('temperatura.4')">Temperatura</a>
-                <a href="#" onclick="fetchSnmpData('temperaturaModulo.4')">Módulo</a>
-                <a href="#" onclick="fetchSnmpData('fan1.4')">FAN1 Velocidade</a>
-                <a href="#" onclick="fetchSnmpData('fan2.4')">FAN2 Velocidade</a>
+                <a href="#" onclick="fetchSnmpData('tensao36V.8')">Tensão 36V</a>
+                <a href="#" onclick="fetchSnmpData('tensao24V.8')">Tensão 24V</a>
+                <a href="#" onclick="fetchSnmpData('corrente.8')">Corrente</a>
+                <a href="#" onclick="fetchSnmpData('frequencia.8')">Frequência</a>
+                <a href="#" onclick="fetchSnmpData('temperatura.8')">Temperatura</a>
+                <a href="#" onclick="fetchSnmpData('temperaturaModulo.8')">Módulo</a>
+                <a href="#" onclick="fetchSnmpData('fan1.8')">FAN1 Velocidade</a>
+                <a href="#" onclick="fetchSnmpData('fan2.8')">FAN2 Velocidade</a>
             </div>
         </div>
 
@@ -412,7 +412,7 @@
     });
 
     function checkEthernetStatus() {
-        fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.4")
+        fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable7")
             .then(response => response.text())
             .then(data => {
                 const ethernetIndicator = document.getElementById("ethernetIndicator");
@@ -422,7 +422,7 @@
     }
 
     function checkAsiStatus() {
-        fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.4")
+        fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.8")
             .then(response => response.text())
             .then(data => {
                 const asiIndicator = document.getElementById("asiIndicator");
@@ -439,11 +439,11 @@
 
     // Grafana URLs matching first code dashboard snapshots
     const grafanaUrls = {
-        'fan1': "http://localhost:3000/d/cel66wd1orl6oa/fan1-8?orgId=1&from=1746122680090&to=1746727480091",
-        'fan2': "http://localhost:3000/d/ael6792vwruo0f/fan2-8?orgId=1&from=1746122669472&to=1746727469472",
-        'temperatura': "http://localhost:3000/d/cel68afi339xcf/temperatura-8?orgId=1&from=1746122656325&to=1746727456325",
-        'frequencia': "http://localhost:3000/d/ael69171q248wf/frequencia-8?orgId=1&from=1746122642602&to=1746727442602",
-        'temperaturaModulo': "http://localhost:3000/d/del69rhm1dk3kd/temperaturamodulo-8?orgId=1&from=1746122628620&to=1746727428620"
+        'fan1': "http://localhost:3000/d/del66ukqsv56oa/fan1-7?orgId=1&from=1746122506592&to=1746727306592",
+        'fan2': "http://localhost:3000/d/bel6762yx7280c/fan2-7?orgId=1&from=1746122524075&to=1746727324076",
+        'temperatura': "http://localhost:3000/d/cel6887m3hxq8c/temperatura-7?orgId=1&from=1746122535813&to=1746727335813",
+        'frequencia': "http://localhost:3000/d/del68yzv1xq80f/frequencia-7?orgId=1&from=1746122547809&to=1746727347809",
+        'temperaturaModulo': "http://localhost:3000/d/eel69o5ddu0owc/temperaturamodulo-7?orgId=1&from=1746122558099&to=1746727358099"
     };
 
     // Load Grafana dashboard into iframe in content area
@@ -456,11 +456,16 @@
             return;
         }
 
-        const iframe = document.createElement('iframe');
+         const iframe = document.createElement('iframe');
         iframe.className = 'grafana-frame';
         iframe.src = grafanaUrls[item];
         iframe.allowFullscreen = true;
         iframe.allow = 'fullscreen';
+
+        // TAMANHO PERSONALIZADO
+        iframe.style.width = '80%';     // ou por exemplo: '1200px'
+        iframe.style.height = '370px';   // ajuste como quiser
+
         contentArea.appendChild(iframe);
     }
 
@@ -508,14 +513,14 @@
 
     function fetchAllSnmpDataOnLoad() {
         const oids = [
-            'tensao36V.4',
-            'tensao24V.4',
-            'corrente.4',
-            'frequencia.4',
-            'temperatura.4',
-            'modulo.4',
-            'fan1.4',
-            'fan2.4'
+            'tensao36V.8',
+            'tensao24V.8',
+            'corrente.8',
+            'frequencia.8',
+            'temperatura.8',
+            'modulo.8',
+            'fan1.8',
+            'fan2.8'
         ];
 
         oids.forEach(oid => {
@@ -612,7 +617,7 @@
     atualizarDataHora();
 
     function checkEthernetStatus() {
-  fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.4")
+  fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.8")
     .then(response => response.text())
     .then(data => {
       const ethernetIndicator = document.getElementById("ethernetIndicator");
@@ -627,7 +632,7 @@
   }
 
   function checkAsiStatus() {
-  fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.4")
+  fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.8")
     .then(response => response.text())
     .then(data => {
       const asiIndicator = document.getElementById("asiIndicator");
@@ -657,4 +662,3 @@
 
 </body>
 </html>
-

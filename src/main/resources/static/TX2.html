@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TX-4</title>
+    <title>TX-2</title>
     <style>
         body {
             background-color: #222;
@@ -306,14 +306,14 @@
         <div class="dropdown">
             <button class="button" onclick="toggleDropdown(event)">Valores</button>
             <div class="dropdown-content">
-                <a href="#" onclick="fetchSnmpData('tensao36V.4')">Tensão 36V</a>
-                <a href="#" onclick="fetchSnmpData('tensao24V.4')">Tensão 24V</a>
-                <a href="#" onclick="fetchSnmpData('corrente.4')">Corrente</a>
-                <a href="#" onclick="fetchSnmpData('frequencia.4')">Frequência</a>
-                <a href="#" onclick="fetchSnmpData('temperatura.4')">Temperatura</a>
-                <a href="#" onclick="fetchSnmpData('temperaturaModulo.4')">Módulo</a>
-                <a href="#" onclick="fetchSnmpData('fan1.4')">FAN1 Velocidade</a>
-                <a href="#" onclick="fetchSnmpData('fan2.4')">FAN2 Velocidade</a>
+                <a href="#" onclick="fetchSnmpData('tensao36V.2')">Tensão 36V</a>
+                <a href="#" onclick="fetchSnmpData('tensao24V.2')">Tensão 24V</a>
+                <a href="#" onclick="fetchSnmpData('corrente.2')">Corrente</a>
+                <a href="#" onclick="fetchSnmpData('frequencia.2')">Frequência</a>
+                <a href="#" onclick="fetchSnmpData('temperatura.2')">Temperatura</a>
+                <a href="#" onclick="fetchSnmpData('temperaturaModulo.2')">Módulo</a>
+                <a href="#" onclick="fetchSnmpData('fan1.2')">FAN1 Velocidade</a>
+                <a href="#" onclick="fetchSnmpData('fan2.2')">FAN2 Velocidade</a>
             </div>
         </div>
 
@@ -412,7 +412,7 @@
     });
 
     function checkEthernetStatus() {
-        fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.4")
+        fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.2")
             .then(response => response.text())
             .then(data => {
                 const ethernetIndicator = document.getElementById("ethernetIndicator");
@@ -422,7 +422,7 @@
     }
 
     function checkAsiStatus() {
-        fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.4")
+        fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.2")
             .then(response => response.text())
             .then(data => {
                 const asiIndicator = document.getElementById("asiIndicator");
@@ -461,6 +461,11 @@
         iframe.src = grafanaUrls[item];
         iframe.allowFullscreen = true;
         iframe.allow = 'fullscreen';
+
+        // TAMANHO PERSONALIZADO
+        iframe.style.width = '80%';     // ou por exemplo: '1200px'
+        iframe.style.height = '370px';   // ajuste como quiser
+
         contentArea.appendChild(iframe);
     }
 
@@ -508,14 +513,14 @@
 
     function fetchAllSnmpDataOnLoad() {
         const oids = [
-            'tensao36V.4',
-            'tensao24V.4',
-            'corrente.4',
-            'frequencia.4',
-            'temperatura.4',
-            'modulo.4',
-            'fan1.4',
-            'fan2.4'
+            'tensao36V.2',
+            'tensao24V.2',
+            'corrente.2',
+            'frequencia.2',
+            'temperatura.2',
+            'modulo.2',
+            'fan1.2',
+            'fan2.2'
         ];
 
         oids.forEach(oid => {
@@ -584,35 +589,55 @@
       const horaFormatada = agora.toLocaleTimeString('pt-BR');
       document.getElementById('dateTime').textContent = `${dataFormatada} ${horaFormatada}`;
     }
+// Começo
+function ligarDispositivo() {
+  console.log("Comando: Ligar");
+  enviarComandoSNMP(1); // 1 = LIGADO
+}
 
-    function ligarDispositivo() {
-      // Altere para seu endpoint real
-      console.log("Comando: Ligar");
-      fetch('/api/snmp/ligar', { method: 'POST' })
-        .then(response => alert("Dispositivo ligado"))
-        .catch(err => alert("Erro ao ligar"));
-    }
+function desligarDispositivo() {
+  console.log("Comando: Desligar");
+  enviarComandoSNMP(2); // 2 = DESLIGADO
+}
 
-    function desligarDispositivo() {
-      // Altere para seu endpoint real
-      console.log("Comando: Desligar");
-      fetch('/api/snmp/desligar', { method: 'POST' })
-        .then(response => alert("Dispositivo desligado"))
-        .catch(err => alert("Erro ao desligar"));
-    }
+function enviarComandoSNMP(valor) {
+  const ip = "10.10.103.103";
+  const community = "private"; // Use "public" para teste de leitura
+  const oid = "1.3.6.1.4.1.43768.3.1.1.10.2.8.3.1.1.2.2";
 
-    function voltar() {
-      // Ação do botão voltar
+  const url = `http://localhost:8080/snmp/set?ip=${ip}&community=${community}&oid=${oid}&value=${valor}`;
+
+  console.log("Enviando SET:", url);
+
+  fetch(url, { method: 'POST' })
+    .then(response => response.text())
+    .then(data => {
+      alert("Resposta: " + data);
+      console.log("Resposta SNMP SET:", data);
+    })
+    .catch(error => {
+      alert("Erro ao enviar comando SNMP: " + error);
+      console.error(error);
+    });
+}
+
+function voltar() {
+
       console.log("Voltando à tela anterior");
       window.location.href = "/menu"; // ou qualquer outra rota
     }
 
-    // Atualizar data/hora a cada segundo
-    setInterval(atualizarDataHora, 1000);
-    atualizarDataHora();
-
+  function atualizarDataHora() {
+    const agora = new Date();
+    const dataFormatada = agora.toLocaleDateString('pt-BR');
+    const horaFormatada = agora.toLocaleTimeString('pt-BR');
+    document.getElementById('dateTime').textContent = `${dataFormatada} ${horaFormatada}`;
+  }
+  setInterval(atualizarDataHora, 1000);
+  atualizarDataHora();
+// Fim
     function checkEthernetStatus() {
-  fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.4")
+  fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.2")
     .then(response => response.text())
     .then(data => {
       const ethernetIndicator = document.getElementById("ethernetIndicator");
@@ -627,7 +652,7 @@
   }
 
   function checkAsiStatus() {
-  fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.4")
+  fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.2")
     .then(response => response.text())
     .then(data => {
       const asiIndicator = document.getElementById("asiIndicator");

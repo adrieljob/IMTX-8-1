@@ -590,21 +590,47 @@
       document.getElementById('dateTime').textContent = `${dataFormatada} ${horaFormatada}`;
     }
 
-    function ligarDispositivo() {
-      // Altere para seu endpoint real
-      console.log("Comando: Ligar");
-      fetch('/api/snmp/ligar', { method: 'POST' })
-        .then(response => alert("Dispositivo ligado"))
-        .catch(err => alert("Erro ao ligar"));
-    }
+function ligarDispositivo() {
+   fetch('http://localhost:3100/toggle-tx', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({ tx: 3, value: 1 }) // tx=2 e value=1 liga o transmissor 2
+   })
+   .then(async response => {
+       const data = await response.json();
+       if (!response.ok) {
+           console.error("Erro:", data);
+           throw new Error(data.message || "Erro ao ligar");
+       }
+       console.log(data.message);
+       alert(data.message);
+   })
+   .catch(error => {
+       console.error("Erro:", error);
+       alert("Falha ao ligar o dispositivo.");
+   });
+}
 
-    function desligarDispositivo() {
-      // Altere para seu endpoint real
-      console.log("Comando: Desligar");
-      fetch('/api/snmp/desligar', { method: 'POST' })
-        .then(response => alert("Dispositivo desligado"))
-        .catch(err => alert("Erro ao desligar"));
-    }
+function desligarDispositivo() {
+   fetch('http://localhost:3100/toggle-tx', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({ tx: 3, value: 2 }) // tx=2 e value=1 liga o transmissor 2
+   })
+   .then(async response => {
+       const data = await response.json();
+       if (!response.ok) {
+           console.error("Erro:", data);
+           throw new Error(data.message || "Erro ao ligar");
+       }
+       console.log(data.message);
+       alert(data.message);
+   })
+   .catch(error => {
+       console.error("Erro:", error);
+       alert("Falha ao desligar o dispositivo.");
+   });
+}
 
     function voltar() {
       // Ação do botão voltar

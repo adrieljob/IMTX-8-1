@@ -355,18 +355,18 @@
         <div class="status-container">
             <h3>Cable Present</h3>
             <div class="row"><span>Status:</span> <span id="cableStatus" class="indicator"></span></div>
-            <div class="row"><span>Speed:</span> <span id="speed4">-</span></div>
-            <div class="row"><span>IP Packet Rate:</span> <span id="packetRate4">-</span></div>
+            <div class="row"><span>Speed:</span> <span id="speed">-</span></div>
+            <div class="row"><span>IP Packet Rate:</span> <span id="packetRate">-</span></div>
         </div>
 
         <div class="status-container">
             <h3>Transport Stream</h3>
-            <div class="row"><span>Locked:</span> <span id="locked4" class="indicator"></span></div>
-            <div class="row"><span>FEC D:</span> <span id="fecD4">-</span></div>
-            <div class="row"><span>FEC L:</span> <span id="fecL4">-</span></div>
-            <div class="row"><span>Rebuild IP Packet:</span> <span id="rebuild4">-</span></div>
-            <div class="row"><span>TS Packets/sec:</span> <span id="tsPackets4">-</span></div>
-            <div class="row"><span>ASI Format:</span> <span id="asi4">-</span></div>
+            <div class="row"><span>Locked:</span> <span id="locked" class="indicator"></span></div>
+            <div class="row"><span>FEC D:</span> <span id="fecD">-</span></div>
+            <div class="row"><span>FEC L:</span> <span id="fecL">-</span></div>
+            <div class="row"><span>Rebuild IP Packet:</span> <span id="rebuild">-</span></div>
+            <div class="row"><span>TS Packets/sec:</span> <span id="tsPackets">-</span></div>
+            <div class="row"><span>ASI Format:</span> <span id="asi">-</span></div>
         </div>
     </div>
 
@@ -435,11 +435,11 @@
 
     // Grafana URLs matching first code dashboard snapshots
     const grafanaUrls = {
-        'fan1': "http://localhost:3000/d/eel66ghs5qqyoa/fan1-2?orgId=1&from=1746122163153&to=1746726963153",
-        'fan2': "http://localhost:3000/d/fel66b9y5454wc/fan2-2?orgId=1&from=1746122174903&to=1746726974904",
-        'temperatura': "http://localhost:3000/d/bel67nr1sdce8b/temperatura-2?orgId=1&from=1746122206726&to=1746727006726",
-        'frequencia': "http://localhost:3000/d/ael68msfezuo0f/frequencia-2?orgId=1&from=1746122184562&to=1746726984562",
-        'temperaturaModulo': "http://localhost:3000/d/bel69c6wfrx8ga/temperaturamodulo-2?orgId=1&from=1746122222258&to=1746727022258"
+        'fan1': "http://localhost:3000/d/eel66ghs5qqyoa/fan1-1?orgId=1&from=1746122163153&to=1746726963153",
+        'fan2': "http://localhost:3000/d/fel66b9y5454wc/fan2-1?orgId=1&from=1746122174903&to=1746726974904",
+        'temperatura': "http://localhost:3000/d/bel67nr1sdce8b/temperatura-1?orgId=1&from=1746122206726&to=1746727006726",
+        'frequencia': "http://localhost:3000/d/ael68msfezuo0f/frequencia-1?orgId=1&from=1746122184562&to=1746726984562",
+        'temperaturaModulo': "http://localhost:3000/d/bel69c6wfrx8ga/temperaturamodulo-1?orgId=1&from=1746122222258&to=1746727022258"
     };
 
     // Load Grafana dashboard into iframe in content area
@@ -530,55 +530,56 @@
                 });
         });
     }
-
+//
      function toggleTSStatus() {
-    const section = document.getElementById("tsStatusSection");
-    const btn = document.getElementById("streamButton");
+  const section = document.getElementById("tsStatusSection");
+  const btn = document.getElementById("streamButton");
 
-    if (section.classList.contains("hidden")) {
-      section.classList.remove("hidden");
-      btn.textContent = "Ocultar Status TX2";
-      updateTSStatus(); // carrega os dados na primeira exibição
-    } else {
-      section.classList.add("hidden");
-      btn.textContent = "Stream";
-    }
+  if (section.classList.contains("hidden")) {
+    section.classList.remove("hidden");
+    btn.textContent = "Ocultar Status TX1";
+    updateTSStatus(); // carrega os dados na primeira exibição
+  } else {
+    section.classList.add("hidden");
+    btn.textContent = "Stream";
   }
+}
 
-  async function updateTSStatus() {
-    const res = await Promise.all([
-    fetch('/ts/cableStatus').then(r => r.text()),
-    fetch('/ts/speed').then(r => r.text()),
-    fetch('/ts/packetRate').then(r => r.text()),
-    fetch('/ts/locked').then(r => r.text()),
-    fetch('/ts/fecD').then(r => r.text()),
-    fetch('/ts/fecL').then(r => r.text()),
-    fetch('/ts/rebuild').then(r => r.text()),
-    fetch('/ts/tsPackets').then(r => r.text()),
-    fetch('/ts/asiFormat').then(r => r.text()),
-    ]);
+async function updateTSStatus() {
+  const res = await Promise.all([
+    fetch('/ts/cableStatus1').then(r => r.text()),
+    fetch('/ts/speed1').then(r => r.text()),
+    fetch('/ts/packetRate1').then(r => r.text()),
+    fetch('/ts/locked1').then(r => r.text()),
+    fetch('/ts/fecD1').then(r => r.text()),
+    fetch('/ts/fecL1').then(r => r.text()),
+    fetch('/ts/rebuild1').then(r => r.text()),
+    fetch('/ts/tsPackets1').then(r => r.text()),
+    fetch('/ts/asiFormat1').then(r => r.text()),
+  ]);
 
-    const [
-      cableStatus, speed, packetRate,
-      locked, fecD, fecL, rebuild, tsPackets, asiFormat
-    ] = res;
+  const [
+    cableStatus1, speed1, packetRate1,
+    locked, fecD, fecL, rebuild, tsPackets, asiFormat1
+  ] = res;
 
-  document.getElementById("cableStatus").textContent = cableStatus;
-  document.getElementById("speed4").textContent = speed;
-  document.getElementById("packetRate4").textContent = packetRate;
-  document.getElementById("locked4").textContent = locked;
-  document.getElementById("fecD4").textContent = fecD;
-  document.getElementById("fecL4").textContent = fecL;
-  document.getElementById("rebuild4").textContent = rebuild;
-  document.getElementById("tsPackets4").textContent = tsPackets;
-  document.getElementById("asi4").textContent = asiFormat;
+  document.getElementById("cableStatus").textContent = cableStatus1;
+  document.getElementById("speed").textContent = speed1;
+  document.getElementById("packetRate").textContent = packetRate1;
+  document.getElementById("locked").textContent = locked;
+  document.getElementById("fecD").textContent = fecD;
+  document.getElementById("fecL").textContent = fecL;
+  document.getElementById("rebuild").textContent = rebuild;
+  document.getElementById("tsPackets").textContent = tsPackets;
+  document.getElementById("asi").textContent = asiFormat1;
+}
+
+setInterval(() => {
+  if (!document.getElementById("tsStatusSection").classList.contains("hidden")) {
+    updateTSStatus();
   }
-
-   setInterval(() => {
-    if (!document.getElementById("tsStatusSection").classList.contains("hidden")) {
-      updateTSStatus();
-    }
-  }, 5000);
+}, 5000);
+//
   function atualizarDataHora() {
       const agora = new Date();
       const dataFormatada = agora.toLocaleDateString('pt-BR');
@@ -684,4 +685,3 @@ function desligarDispositivo() {
 
 </body>
 </html>
-

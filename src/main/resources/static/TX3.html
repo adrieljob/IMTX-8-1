@@ -594,7 +594,7 @@ function ligarDispositivo() {
    fetch('http://localhost:3100/toggle-tx', {
        method: 'POST',
        headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({ tx: 3, value: 1 }) // tx=2 e value=1 liga o transmissor 2
+       body: JSON.stringify({ tx: 2, value: 1 }) // tx=2 e value=1 liga o transmissor 2
    })
    .then(async response => {
        const data = await response.json();
@@ -605,17 +605,13 @@ function ligarDispositivo() {
        console.log(data.message);
        alert(data.message);
    })
-   .catch(error => {
-       console.error("Erro:", error);
-       alert("Falha ao ligar o dispositivo.");
-   });
 }
 
 function desligarDispositivo() {
    fetch('http://localhost:3100/toggle-tx', {
        method: 'POST',
        headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({ tx: 3, value: 2 }) // tx=2 e value=1 liga o transmissor 2
+       body: JSON.stringify({ tx: 2, value: 2 }) // tx=2 e value=1 liga o transmissor 2
    })
    .then(async response => {
        const data = await response.json();
@@ -627,9 +623,6 @@ function desligarDispositivo() {
        alert(data.message);
    })
    .catch(error => {
-       console.error("Erro:", error);
-       alert("Falha ao desligar o dispositivo.");
-   });
 }
 
     function voltar() {

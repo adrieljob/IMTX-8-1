@@ -90,7 +90,7 @@ public class SnmpController {
         oidMappings.put("temperaturaModulo.3", "1.3.6.1.4.1.43768.3.1.1.10.2.8.2.1.1.7.3"); // Temperatura do módulo
         oidMappings.put("fan1.3", "1.3.6.1.4.1.43768.3.1.1.10.2.8.2.1.1.13.3");             // FAN1 Velocidade
         oidMappings.put("fan2.3", "1.3.6.1.4.1.43768.3.1.1.10.2.8.2.1.1.14.3");             // FAN1 Velocidade
-        oidMappings.put("frequencia.3", "1.3.6.1.4.1.43768.3.1.1.10.2.7.2.1.1.4.3");        // Frequência
+        oidMappings.put("frequencia.3", "1.3.6.1.4.1.43768.3.1.1.10.2.7.2.1.1.114.3");        // Frequência
         oidMappings.put("ethernetCable.3", "1.3.6.1.4.1.43768.3.1.1.10.2.10.1.1.1.3.3");    // Ethernet Cable Presente
         oidMappings.put("asiCable.3", "1.3.6.1.4.1.43768.3.1.1.10.2.5.3.1.1.1.2.3");        // ASI Cable Presente
         oidMappings.put("EthernetSpeed.3","1.3.6.1.4.1.43768.3.1.1.10.2.10.1.1.1.4.3");     // Ethernet Speed 3

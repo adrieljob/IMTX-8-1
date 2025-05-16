@@ -67,35 +67,35 @@
 <script>
     async function updateTS2Status() {
       const res = await Promise.all([
-        fetch('/api/ts/cableStatus2').then(r => r.text()),
-        fetch('/api/ts/speed2').then(r => r.text()),
-        fetch('/api/ts/packetRate2').then(r => r.text()),
-        fetch('/api/ts/locked2').then(r => r.text()),
-        fetch('/api/ts/fecD2').then(r => r.text()),
-        fetch('/api/ts/fecL2').then(r => r.text()),
-        fetch('/api/ts/rebuild2').then(r => r.text()),
-        fetch('/api/ts/tsPackets2').then(r => r.text()),
-        fetch('/api/ts/asiFormat2').then(r => r.text()),
+        fetch('/api/ts/cableStatus3').then(r => r.text()),
+        fetch('/api/ts/speed3').then(r => r.text()),
+        fetch('/api/ts/packetRate3').then(r => r.text()),
+        fetch('/api/ts/locked3').then(r => r.text()),
+        fetch('/api/ts/fecD3').then(r => r.text()),
+        fetch('/api/ts/fecL3').then(r => r.text()),
+        fetch('/api/ts/rebuild3').then(r => r.text()),
+        fetch('/api/ts/tsPackets3').then(r => r.text()),
+        fetch('/api/ts/asiFormat3').then(r => r.text()),
       ]);
 
       const [
-        cableStatus, speed, packetRate,
-        locked, fecD, fecL, rebuild, tsPackets, asiFormat
+        cableStatus3, speed3, packetRate3,
+        locked3, fecD3, fecL3, rebuild3, tsPackets3, asiFormat3
       ] = res;
 
-      document.getElementById('cableStatus3').classList.toggle('active', cableStatus !== 2);
-      document.getElementById('speed3').textContent = speed;
-      document.getElementById('packetRate3').textContent = packetRate;
-      document.getElementById('locked3').classList.toggle('active', locked === '1');
-      document.getElementById('fecD3').textContent = fecD;
-      document.getElementById('fecL3').textContent = fecL;
-      document.getElementById('rebuild3').textContent = rebuild;
-      document.getElementById('tsPackets3').textContent = tsPackets;
-      document.getElementById('asi3').textContent = asiFormat;
+      document.getElementById('cableStatus3').classList.toggle('active', cableStatus3 !== 2);
+      document.getElementById('speed3').textContent = speed3;
+      document.getElementById('packetRate3').textContent = packetRate3;
+      document.getElementById('locked3').classList.toggle('active', locked3 === '1');
+      document.getElementById('fecD3').textContent = fecD3;
+      document.getElementById('fecL3').textContent = fecL3;
+      document.getElementById('rebuild3').textContent = rebuild3                                                                                                     ;
+      document.getElementById('tsPackets3').textContent = tsPackets3;
+      document.getElementById('asi3').textContent = asiFormat3;
     }
 
-    updateTS2Status();
-    setInterval(updateTS2Status, 5000);
+    updateTS3Status();
+    setInterval(updateTS3Status, 5000);
 </script>
 
 </body>

@@ -530,103 +530,100 @@
                 });
         });
     }
-
-     function toggleTSStatus() {
+  function toggleTSStatus() {
     const section = document.getElementById("tsStatusSection");
-    const btn = document.getElementById("streamButton");
+    const btn = document.querySelector("button.button[onclick='toggleTSStatus()']");
 
     if (section.classList.contains("hidden")) {
       section.classList.remove("hidden");
-      btn.textContent = "Ocultar Status TX2";
+      if (btn) btn.textContent = "Ocultar Status TX2";
       updateTSStatus(); // carrega os dados na primeira exibição
     } else {
       section.classList.add("hidden");
-      btn.textContent = "Stream";
+      if (btn) btn.textContent = "Stream";
     }
   }
 
   async function updateTSStatus() {
     const res = await Promise.all([
-    fetch('/ts/cableStatus').then(r => r.text()),
-    fetch('/ts/speed').then(r => r.text()),
-    fetch('/ts/packetRate').then(r => r.text()),
-    fetch('/ts/locked').then(r => r.text()),
-    fetch('/ts/fecD').then(r => r.text()),
-    fetch('/ts/fecL').then(r => r.text()),
-    fetch('/ts/rebuild').then(r => r.text()),
-    fetch('/ts/tsPackets').then(r => r.text()),
-    fetch('/ts/asiFormat').then(r => r.text()),
-    ]);
+      fetch('/snmp-data/get-snmp?oid=ethernetCable.2').then(r => r.text()),
+      fetch('/snmp-data/get-snmp?oid=EthernetSpeed.2').then(r => r.text()),
+      fetch('/snmp-data/get-snmp?oid=IPPacketRate.2').then(r => r.text()),
+      fetch('/snmp-data/get-snmp?oid=StreamLocked.2').then(r => r.text()),
+      fetch('/snmp-data/get-snmp?oid=FECD.2').then(r => r.text()),
+      fetch('/snmp-data/get-snmp?oid=FECL.2').then(r => r.text()),
+      fetch('/snmp-data/get-snmp?oid=IPDecodingAlarm.2').then(r => r.text()),
+      fetch('/snmp-data/get-snmp?oid=InputBitrate.2').then(r => r.text()),
+      fetch('/snmp-data/get-snmp?oid=ASIFormat.2').then(r => r.text())
+    ]).catch(error => {
+      console.error("Erro ao buscar dados do TX2:", error);
+      return Array(9).fill("-");
+    });
 
     const [
       cableStatus, speed, packetRate,
       locked, fecD, fecL, rebuild, tsPackets, asiFormat
     ] = res;
 
-  document.getElementById("cableStatus").textContent = cableStatus;
-  document.getElementById("speed4").textContent = speed;
-  document.getElementById("packetRate4").textContent = packetRate;
-  document.getElementById("locked4").textContent = locked;
-  document.getElementById("fecD4").textContent = fecD;
-  document.getElementById("fecL4").textContent = fecL;
-  document.getElementById("rebuild4").textContent = rebuild;
-  document.getElementById("tsPackets4").textContent = tsPackets;
-  document.getElementById("asi4").textContent = asiFormat;
+    document.getElementById("cableStatus").classList.toggle("active", cableStatus.trim() === "1");
+    document.getElementById("speed4").textContent = speed;
+    document.getElementById("packetRate4").textContent = packetRate;
+    document.getElementById("locked4").classList.toggle("active", locked.trim() === "1");
+    document.getElementById("fecD4").textContent = fecD;
+    document.getElementById("fecL4").textContent = fecL;
+    document.getElementById("rebuild4").textContent = rebuild;
+    document.getElementById("tsPackets4").textContent = tsPackets;
+    document.getElementById("asi4").textContent = asiFormat;
   }
 
-   setInterval(() => {
+  // Atualização automática a cada 5 segundos quando a seção estiver visível
+  setInterval(() => {
     if (!document.getElementById("tsStatusSection").classList.contains("hidden")) {
       updateTSStatus();
     }
   }, 5000);
+
   function atualizarDataHora() {
       const agora = new Date();
       const dataFormatada = agora.toLocaleDateString('pt-BR');
       const horaFormatada = agora.toLocaleTimeString('pt-BR');
       document.getElementById('dateTime').textContent = `${dataFormatada} ${horaFormatada}`;
     }
-
 function ligarDispositivo() {
    fetch('http://localhost:3100/toggle-tx', {
-       method: 'POST',
-       headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({ tx: 2, value: 1 }) // tx=2 e value=1 liga o transmissor 2
-   })
-   .then(async response => {
-       const data = await response.json();
-       if (!response.ok) {
-           console.error("Erro:", data);
-           throw new Error(data.message || "Erro ao ligar");
-       }
-       console.log(data.message);
-       alert(data.message);
-   })
-   .catch(error => {
-       console.error("Erro:", error);
-       alert("Falha ao ligar o dispositivo.");
-   });
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tx: 2, value: 1 }) // tx=2 e value=1 liga o transmissor 2
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Erro ao ligar");
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data.message);
+        alert(data.message);
+    })
 }
 
 function desligarDispositivo() {
    fetch('http://localhost:3100/toggle-tx', {
-       method: 'POST',
-       headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({ tx: 2, value: 2 }) // tx=2 e value=1 liga o transmissor 2
-   })
-   .then(async response => {
-       const data = await response.json();
-       if (!response.ok) {
-           console.error("Erro:", data);
-           throw new Error(data.message || "Erro ao ligar");
-       }
-       console.log(data.message);
-       alert(data.message);
-   })
-   .catch(error => {
-       console.error("Erro:", error);
-       alert("Falha ao desligar o dispositivo.");
-   });
-}
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tx: 2, value: 1 }) // tx=2 e value=1 liga o transmissor 2
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Erro ao desligar");
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data.message);
+        alert(data.message);
+    })
+    }
 
       function voltar() {
       // Ação do botão voltar

@@ -354,19 +354,19 @@
     <div id="tsStatusSection" class="hidden">
         <div class="status-container">
             <h3>Cable Present</h3>
-            <div class="row"><span>Status:</span> <span id="cableStatus" class="indicator"></span></div>
-            <div class="row"><span>Speed:</span> <span id="speed4">-</span></div>
-            <div class="row"><span>IP Packet Rate:</span> <span id="packetRate4">-</span></div>
+            <div class="row"><span>Status:</span> <span id="cableStatus2" class="indicator"></span></div>
+            <div class="row"><span>Speed:</span> <span id="speed2">-</span></div>
+            <div class="row"><span>IP Packet Rate:</span> <span id="packetRate2">-</span></div>
         </div>
 
         <div class="status-container">
             <h3>Transport Stream</h3>
-            <div class="row"><span>Locked:</span> <span id="locked4" class="indicator"></span></div>
-            <div class="row"><span>FEC D:</span> <span id="fecD4">-</span></div>
-            <div class="row"><span>FEC L:</span> <span id="fecL4">-</span></div>
-            <div class="row"><span>Rebuild IP Packet:</span> <span id="rebuild4">-</span></div>
-            <div class="row"><span>TS Packets/sec:</span> <span id="tsPackets4">-</span></div>
-            <div class="row"><span>ASI Format:</span> <span id="asi4">-</span></div>
+            <div class="row"><span>Locked:</span> <span id="locked2" class="indicator"></span></div>
+            <div class="row"><span>FEC D:</span> <span id="fecD2">-</span></div>
+            <div class="row"><span>FEC L:</span> <span id="fecL2">-</span></div>
+            <div class="row"><span>Rebuild IP Packet:</span> <span id="rebuild2">-</span></div>
+            <div class="row"><span>TS Packets/sec:</span> <span id="tsPackets2">-</span></div>
+            <div class="row"><span>ASI Format:</span> <span id="asi2">-</span></div>
         </div>
     </div>
 
@@ -565,15 +565,15 @@
       locked, fecD, fecL, rebuild, tsPackets, asiFormat
     ] = res;
 
-    document.getElementById("cableStatus").classList.toggle("active", cableStatus.trim() === "1");
-    document.getElementById("speed4").textContent = speed;
-    document.getElementById("packetRate4").textContent = packetRate;
-    document.getElementById("locked4").classList.toggle("active", locked.trim() === "1");
-    document.getElementById("fecD4").textContent = fecD;
-    document.getElementById("fecL4").textContent = fecL;
-    document.getElementById("rebuild4").textContent = rebuild;
-    document.getElementById("tsPackets4").textContent = tsPackets;
-    document.getElementById("asi4").textContent = asiFormat;
+    document.getElementById("cableStatus2").classList.toggle("active", cableStatus.trim() === "1");
+    document.getElementById("speed2").textContent = speed;
+    document.getElementById("packetRate2").textContent = packetRate;
+    document.getElementById("locked2").classList.toggle("active", locked.trim() === "1");
+    document.getElementById("fecD2").textContent = fecD;
+    document.getElementById("fecL2").textContent = fecL;
+    document.getElementById("rebuild2").textContent = rebuild;
+    document.getElementById("tsPackets2").textContent = tsPackets;
+    document.getElementById("asi2").textContent = asiFormat;
   }
 
   // Atualização automática a cada 5 segundos quando a seção estiver visível

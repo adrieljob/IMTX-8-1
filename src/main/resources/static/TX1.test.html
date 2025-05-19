@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TX-1</title>
+    <style>
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: Arial, sans-serif;
+          background-color: #222;
+          color: white;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .header {
+          width: 100%;
+          background-color: #444;
+          padding: 10px;
+          text-align: center;
+          font-size: 20px;
+          font-weight: bold;
+        }
+
+        .status-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #333;
+          padding: 10px 20px;
+          font-size: 16px;
+          width: 100%;
+        }
+
+        .main-content {
+          flex: 1;
+          display: flex;
+          flex-direction: row;
+          gap: 30px;
+          padding: 20px;
+          height: 100%;
+        }
+
+        .left-panel {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          max-width: 400px;
+          height: 100%;
+        }
+
+        .status-container {
+          background-color: #e6e6e6;
+          color: #000;
+          padding: 15px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          flex-grow: 1;
+        }
+
+        .row {
+          display: flex;
+          justify-content: space-between;
+          margin: 8px 0;
+          font-size: 16px;
+        }
+
+        .button-container {
+          display: flex;
+          flex-direction: column;
+          background-color: #333;
+          padding: 15px;
+          border-radius: 10px;
+          flex-shrink: 0;
+        }
+
+        .button {
+          padding: 12px;
+          background-color: red;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 16px;
+          margin-bottom: 10px;
+          width: 100%;
+        }
+
+        .dropdown {
+          position: relative;
+        }
+
+        .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #333;
+          width: 100%;
+          border-radius: 5px;
+          box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+          z-index: 10;
+        }
+
+        .dropdown-content a {
+          display: block;
+          color: white;
+          padding: 10px;
+          text-decoration: none;
+          font-size: 16px;
+        }
+
+        .dropdown-content a:hover {
+          background-color: #555;
+        }
+
+        .content-area {
+          flex: 2;
+          background-color: #444;
+          padding: 20px;
+          border-radius: 10px;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          font-size: 18px;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hidden {
+          display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="status-bar">
+    <div class="status-left">
+        <span class="status-time" id="dateTime">--:--:--</span>
+        <span class="status-conn conn-eth disconnected" id="connEth">ETH</span>
+        <span class="status-conn conn-asi disconnected" id="connAsi">ASI</span>
+    </div>
+    <div class="status-buttons">
+        <button class="btn-on" onclick="ligarDispositivo()">Ligar</button>
+        <button class="btn-off" onclick="desligarDispositivo()">Desligar</button>
+        <button class="btn-back" onclick="window.history.back()">Voltar</button>
+    </div>
+</div>
+
+<div class="header">IMTX-1</div>
+
+<div class="main-content">
+    <div class="left-panel">
+        <div class="status-container">
+            <h3>Valores</h3>
+            <div class="row"><span>Tensão 36V:</span> <span id="tensao36V">-</span></div>
+            <div class="row"><span>Tensão 24V:</span> <span id="tensao24V">-</span></div>
+            <div class="row"><span>Corrente:</span> <span id="corrente">-</span></div>
+            <div class="row"><span>Frequência:</span> <span id="frequencia">-</span></div>
+            <div class="row"><span>Temperatura:</span> <span id="temperatura">-</span></div>
+            <div class="row"><span>Temperatura do Módulo:</span> <span id="temperaturaModulo">-</span></div>
+            <div class="row"><span>FAN1 Velocidade:</span> <span id="fan1">-</span></div>
+            <div class="row"><span>FAN2 Velocidade:</span> <span id="fan2">-</span></div>
+        </div>
+
+        <div class="button-container">
+            <div class="dropdown">
+                <button class="button" onclick="toggleDropdown(event)">Valores</button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="fetchSnmpData('tensao36V.2')">Tensão 36V</a>
+                    <a href="#" onclick="fetchSnmpData('tensao24V.2')">Tensão 24V</a>
+                    <a href="#" onclick="fetchSnmpData('corrente.2')">Corrente</a>
+                    <a href="#" onclick="fetchSnmpData('frequencia.2')">Frequência</a>
+                    <a href="#" onclick="fetchSnmpData('temperatura.2')">Temperatura</a>
+                    <a href="#" onclick="fetchSnmpData('temperaturaModulo.2')">Módulo</a>
+                    <a href="#" onclick="fetchSnmpData('fan1.2')">FAN1 Velocidade</a>
+                    <a href="#" onclick="fetchSnmpData('fan2.2')">FAN2 Velocidade</a>
+                </div>
+            </div>
+
+            <button class="button" id="ethernetIndicator">Ethernet</button>
+            <button class="button" id="asiIndicator">ASI</button>
+            <button class="button" onclick="toggleTSStatus()">Stream</button>
+        </div>
+    </div>
+
+    <div class="content-area" id="content-area">
+        Aqui aparecerão os dados SNMP...
+        <div id="snmpData"></div>
+    </div>
+</div>
+
+<div id="tsStatusSection" class="hidden">
+    <div class="status-container">
+        <h3>Cable Present</h3>
+        <div class="row"><span>Status:</span> <span id="cableStatus2" class="indicator"></span></div>
+        <div class="row"><span>Speed:</span> <span id="speed2">-</span></div>
+        <div class="row"><span>IP Packet Rate:</span> <span id="packetRate2">-</span></div>
+    </div>
+
+    <div class="status-container">
+        <h3>Transport Stream</h3>
+        <div class="row"><span>Locked:</span> <span id="locked2" class="indicator"></span></div>
+        <div class="row"><span>FEC D:</span> <span id="fecD2">-</span></div>
+        <div class="row"><span>FEC L:</span> <span id="fecL2">-</span></div>
+        <div class="row"><span>Rebuild IP Packet:</span> <span id="rebuild2">-</span></div>
+        <div class="row"><span>TS Packets/sec:</span> <span id="tsPackets2">-</span></div>
+        <div class="row"><span>ASI Format:</span> <span id="asi2">-</span></div>
+    </div>
+</div>
+
+<script>
+    function fetchSnmpData(oidName) {
+        const contentArea = document.getElementById('content-area');
+        contentArea.textContent = 'Carregando...';
+
+        fetch(`http://localhost:8080/snmp-data/get-snmp?oid=${oidName}`)
+            .then(response => response.text())
+            .then(data => {
+                contentArea.textContent = `${oidName}: ${data}`;
+            })
+            .catch(error => {
+                console.error('Erro ao obter dados SNMP:', error);
+                contentArea.textContent = `Erro ao obter dados SNMP para ${oidName}`;
+            });
+    }
+
+    function toggleDropdown(event) {
+        const button = event.target;
+        const dropdown = button.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-content').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = "none";
+            }
+        });
+
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    function toggleTSStatus() {
+        const section = document.getElementById("tsStatusSection");
+        const btn = document.querySelector(".button");
+
+        if (section.classList.contains("hidden")) {
+            section.classList.remove("hidden");
+            btn.textContent = "Ocultar Status TX2";
+            updateTSStatus(); // carrega os dados na primeira exibição
+        } else {
+            section.classList.add("hidden");
+            btn.textContent = "Stream";
+        }
+    }
+
+    async function updateTSStatus() {
+        const res = await Promise.all([
+            fetch('/ts/cableStatus').then(r => r.text()),
+            fetch('/ts/speed').then(r => r.text()),
+            fetch('/ts/packetRate').then(r => r.text()),
+            fetch('/ts/locked').then(r => r.text()),
+            fetch('/ts/fecD').then(r => r.text()),
+            fetch('/ts/fecL').then(r => r.text()),
+            fetch('/ts/rebuild').then(r => r.text()),
+            fetch('/ts/tsPackets').then(r => r.text()),
+            fetch('/ts/asiFormat').then(r => r.text()),
+        ]);
+
+        const [
+            cableStatus, speed, packetRate,
+            locked, fecD, fecL, rebuild, tsPackets, asiFormat
+        ] = res;
+
+        document.getElementById("cableStatus").textContent = cableStatus;
+        document.getElementById("speed2").textContent = speed;
+        document.getElementById("packetRate2").textContent = packetRate;
+        document.getElementById("locked2").textContent = locked;
+        document.getElementById("fecD2").textContent = fecD;
+        document.getElementById("fecL2").textContent = fecL;
+        document.getElementById("rebuild2").textContent = rebuild;
+        document.getElementById("tsPackets2").textContent = tsPackets;
+        document.getElementById("asi2").textContent = asiFormat;
+    }
+
+    function ligarDispositivo() {
+        console.log("Comando: Ligar");
+        fetch('/api/snmp/ligar', { method: 'POST' })
+            .then(response => alert("Dispositivo ligado"))
+            .catch(err => alert("Erro ao ligar"));
+    }
+
+    function desligarDispositivo() {
+        console.log("Comando: Desligar");
+        fetch('/api/snmp/desligar', { method: 'POST' })
+            .then(response => alert("Dispositivo desligado"))
+            .catch(err => alert("Erro ao desligar"));
+    }
+
+    function atualizarDataHora() {
+        const agora = new Date();
+        const dataFormatada = agora.toLocaleDateString('pt-BR');
+        const horaFormatada = agora.toLocaleTimeString('pt-BR');
+        document.getElementById('dateTime').textContent = `${dataFormatada} ${horaFormatada}`;
+    }
+
+    function checkEthernetStatus() {
+        fetch("http://localhost:8080/snmp-data/get-snmp?oid=ethernetCable.2")
+            .then(response => response.text())
+            .then(data => {
+                const ethernetIndicator = document.getElementById("ethernetIndicator");
+                const connEth = document.getElementById("connEth");
+
+                ethernetIndicator.classList.toggle("status-ethernet-connected", parseInt(data) === 1);
+                ethernetIndicator.classList.toggle("status-ethernet-disconnected", parseInt(data) === 2);
+
+                connEth.classList.toggle("connected", parseInt(data) === 1);
+                connEth.classList.toggle("disconnected", parseInt(data) === 2);
+            });
+    }
+
+    function checkAsiStatus() {
+        fetch("http://localhost:8080/snmp-data/get-snmp?oid=asiCable.2")
+            .then(response => response.text())
+            .then(data => {
+                const asiIndicator = document.getElementById("asiIndicator");
+                const connAsi = document.getElementById("connAsi");
+
+                asiIndicator.classList.toggle("status-asi-connected", parseInt(data) === 1);
+                asiIndicator.classList.toggle("status-asi-disconnected", parseInt(data) === 2);
+
+                connAsi.classList.toggle("connected", parseInt(data) === 1);
+                connAsi.classList.toggle("disconnected", parseInt(data) === 2);
+            });
+    }
+
+    // Chamadas automáticas com intervalo
+    setInterval(checkEthernetStatus, 5000);
+    checkEthernetStatus();
+
+    setInterval(checkAsiStatus, 5000);
+    checkAsiStatus();
+
+    // Atualizar data/hora a cada segundo
+    setInterval(atualizarDataHora, 1000);
+    atualizarDataHora();
+
+    // Função para carregar dados SNMP ao carregar a página
+    window.onload = function() {
+        fetchAllSnmpDataOnLoad();
+    };
+
+    function fetchAllSnmpDataOnLoad() {
+        const oids = [
+            'tensao36V.2',
+            'tensao24V.2',
+            'corrente.2',
+            'frequencia.2',
+            'temperatura.2',
+            'temperaturaModulo.2',
+            'fan1.2',
+            'fan2.2'
+        ];
+
+        oids.forEach(oid => {
+            fetch(`http://localhost:8080/snmp-data/get-snmp?oid=${oid}`)
+                .then(response => response.text())
+                .then(data => {
+                    console.log(`OID ${oid}: ${data}`);
+                    // Atualizar os elementos correspondentes no DOM
+                    document.getElementById(oid.split('.')[0]).textContent = data;
+                })
+                .catch(error => {
+                    console.error(`Erro ao buscar ${oid}:`, error);
+                });
+        });
+    }
+</script>
+
+</body>
+</html>
